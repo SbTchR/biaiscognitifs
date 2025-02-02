@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulation du biais d'optimisme</title>
+  <style>
+    /* --- Style général --- */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f7f7f7;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    /* --- Zone de configuration --- */
+    #game-setup {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #game-setup input {
+      width: 60px;
+      padding: 5px;
+      margin: 0 10px;
+      text-align: center;
+    }
+    #game-setup button {
+      padding: 5px 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    /* --- Zone de jeu --- */
+    #status, #turnInfo, #roundSummary, #gameOver {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    #choiceButtons {
+      margin-top: 10px;
+    }
+    #choiceButtons button {
+      padding: 10px 15px;
+      font-size: 1.2rem;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background: #4CAF50;
+      color: #fff;
+      transition: background 0.3s;
+    }
+    #choiceButtons button:hover {
+      background: #45a049;
+    }
+    #roundSummary button, #gameOver button {
+      padding: 8px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background: #2196F3;
+      color: #fff;
+      transition: background 0.3s;
+    }
+    #roundSummary button:hover, #gameOver button:hover {
+      background: #1976D2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulation du biais d'optimisme</h1>
+
+    <!-- Zone de configuration -->
+    <div id="game-setup">
+      <label for="numStudents">Nombre d'élèves : </label>
+      <input type="number" id="numStudents" value="5" min="1">
+      <label for="startingStock">Stock initial de poissons : </label>
+      <input type="number" id="startingStock" value="50" min="1">
+      <button id="startGame">Démarrer le jeu</button>
+    </div>
+
+    <!-- Zone de jeu -->
+    <div id="game-area" style="display:none;">
+      <!-- Informations sur le tour et le stock -->
+      <div id="status">
+        <p id="roundInfo"></p>
+        <p id="stockInfo"></p>
+      </div>
+      
+      <!-- Tour de chaque élève -->
+      <div id="turnInfo">
+        <p id="currentStudent"></p>
+        <div id="choiceButtons">
+          <button class="choice" data-choice="1">1</button>
+          <button class="choice" data-choice="2">2</button>
+          <button class="choice" data-choice="3">3</button>
+          <button class="choice" data-choice="4">4</button>
+        </div>
+      </div>
+      
+      <!-- Résumé du tour -->
+      <div id="roundSummary" style="display:none;">
+        <p id="roundResult"></p>
+        <button id="nextRound">Tour suivant</button>
+      </div>
+      
+      <!-- Fin de partie -->
+      <div id="gameOver" style="display:none;">
+        <p id="gameOverMessage"></p>
+        <button id="restartGame">Recommencer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*******************************
+     * Variables globales
+     *******************************/
+    let numStudents, startingStock;
+    let currentStock;
+    let currentRound = 1;
+    let currentStudent = 1;
+    let roundChoices = [];      // Stocke le nombre de poissons pris par chaque élève
+    let roundInitialStock = 0;  // Stock initial au début du tour (pour évaluer la surexploitation)
+
+    /*******************************
+     * Sélection des éléments DOM
+     *******************************/
+    const gameSetup = document.getElementById('game-setup');
+    const startGameBtn = document.getElementById('startGame');
+    const gameArea = document.getElementById('game-area');
+    const roundInfo = document.getElementById('roundInfo');
+    const stockInfo = document.getElementById('stockInfo');
+    const currentStudentText = document.getElementById('currentStudent');
+    const choiceButtons = document.querySelectorAll('.choice');
+    const roundSummary = document.getElementById('roundSummary');
+    const roundResult = document.getElementById('roundResult');
+    const nextRoundBtn = document.getElementById('nextRound');
+    const gameOverDiv = document.getElementById('gameOver');
+    const gameOverMessage = document.getElementById('gameOverMessage');
+    const restartGameBtn = document.getElementById('restartGame');
+
+    /*******************************
+     * Initialisation du jeu
+     *******************************/
+    startGameBtn.addEventListener('click', () => {
+      numStudents = parseInt(document.getElementById('numStudents').value);
+      startingStock = parseInt(document.getElementById('startingStock').value);
+      if (isNaN(numStudents) || numStudents < 1 || isNaN(startingStock) || startingStock < 1) {
+        alert("Veuillez entrer des valeurs valides.");
+        return;
+      }
+      currentStock = startingStock;
+      currentRound = 1;
+      initRound();
+      gameSetup.style.display = "none";
+      gameArea.style.display = "block";
+    });
+
+    /*******************************
+     * Gestion des choix des élèves
+     *******************************/
+    choiceButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const choice = parseInt(button.getAttribute('data-choice'));
+        roundChoices.push(choice);
+        // Passage à l'élève suivant
+        currentStudent++;
+        if (currentStudent > numStudents) {
+          // Fin du tour : calcul des résultats et reproduction
+          processRound();
+        } else {
+          updateTurnInfo();
+        }
+      });
+    });
+
+    /*******************************
+     * Bouton "Tour suivant"
+     *******************************/
+    nextRoundBtn.addEventListener('click', () => {
+      roundSummary.style.display = "none";
+      // Si l'écosystème n'est pas effondré, on lance un nouveau tour
+      if (currentStock > 0) {
+        currentRound++;
+        initRound();
+      }
+    });
+
+    /*******************************
+     * Bouton "Recommencer"
+     *******************************/
+    restartGameBtn.addEventListener('click', () => {
+      // Réinitialiser la configuration
+      gameOverDiv.style.display = "none";
+      gameSetup.style.display = "block";
+      gameArea.style.display = "none";
+      // Vider les choix
+      roundChoices = [];
+    });
+
+    /*******************************
+     * Fonctions principales
+     *******************************/
+
+    // Initialisation d'un tour
+    function initRound() {
+      roundInitialStock = currentStock; // Stock au début du tour
+      roundChoices = [];
+      currentStudent = 1;
+      updateStatus();
+      updateTurnInfo();
+    }
+
+    // Met à jour les informations sur le tour et le stock
+    function updateStatus() {
+      roundInfo.textContent = `Tour ${currentRound}`;
+      stockInfo.textContent = `Stock actuel de poissons : ${currentStock}`;
+    }
+
+    // Met à jour le texte indiquant l'élève dont c'est le tour
+    function updateTurnInfo() {
+      currentStudentText.textContent = `Élève ${currentStudent} : choisissez le nombre de poissons à prendre (entre 1 et 4)`;
+    }
+
+    // Traitement en fin de tour
+    function processRound() {
+      // Calcul du nombre total de poissons pris
+      const totalTaken = roundChoices.reduce((a, b) => a + b, 0);
+      let summaryText = `Au tour ${currentRound}, les élèves ont pris un total de ${totalTaken} poisson(s).<br>`;
+      const remaining = currentStock - totalTaken;
+
+      // Critère de surexploitation :
+      // Si les élèves prennent plus de 50% du stock initial du tour, l'écosystème est surexploité.
+      if (totalTaken > (roundInitialStock * 0.5)) {
+        summaryText += `<strong>SUREXPLORATION :</strong> Plus de 50% des poissons ont été pris (${totalTaken} > ${Math.floor(roundInitialStock * 0.5)}).<br>L'écosystème s'est effondré.`;
+        roundResult.innerHTML = summaryText;
+        roundSummary.style.display = "block";
+        endGame();
+      } else {
+        // Reproduction : le stock restant est doublé
+        summaryText += `Poissons restants : ${remaining}.<br>`;
+        currentStock = remaining * 2;
+        summaryText += `Après reproduction, le nouveau stock est de ${currentStock} poisson(s).`;
+        roundResult.innerHTML = summaryText;
+        roundSummary.style.display = "block";
+        // Vérifier si le stock est épuisé malgré la reproduction
+        if (currentStock <= 0) {
+          endGame();
+        }
+      }
+    }
+
+    // Fin de jeu
+    function endGame() {
+      // Masquer la zone de choix et afficher le message de fin
+      document.getElementById('turnInfo').style.display = "none";
+      nextRoundBtn.style.display = "none";
+      gameOverMessage.innerHTML = `<strong>Fin de l'expérience.</strong> L'écosystème s'est effondré au tour ${currentRound}.<br>
+      Analysez avec vos élèves les raisons de cet effondrement et discutez du biais d'optimisme.`;
+      gameOverDiv.style.display = "block";
+    }
+  </script>
+</body>
+</html>
