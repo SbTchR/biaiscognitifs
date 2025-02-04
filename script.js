@@ -10,3 +10,14 @@ document.addEventListener("DOMContentLoaded", function() {
     // La transformation hover (scale) est gérée par le CSS uniquement
   });
 });
+
+// Fonction qui applique l'effet pop-up sur le titre
+function popUpTitle() {
+  const title = document.querySelector('.header h1');
+  if (title) {
+    title.classList.add('pop-up');
+  }
+}
+
+// Déclenche l'animation une fois que le DOM est complètement chargé
+document.addEventListener("DOMContentLoaded", popUpTitle);
