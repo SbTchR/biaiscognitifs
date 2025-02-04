@@ -19,15 +19,25 @@
       <p>Votre cerveau vous joue des tours ! </p>
     </header>
     
-         <!-- Menu sous forme de mind map circulaire -->
-    <div class="mindmap-menu">
-      <!-- Chaque lien possède un attribut data-angle pour déterminer sa position angulaire -->
-      <a href="page1.html" class="mindmap-item" data-angle="0">Biais de Confirmation</a>
-      <a href="page2.html" class="mindmap-item" data-angle="120">Effet de Halo</a>
-      <a href="page3.html" class="mindmap-item" data-angle="240">Biais de Récence</a>
-      <!-- Vous pouvez ajouter d'autres liens avec des angles adaptés -->
-    </div>
-    
+          <!-- Conteneur pour le menu circulaire et l'image centrale -->
+    <div class="mindmap-container">
+      <!-- Menu circulaire (qui tourne lentement) -->
+      <div class="mindmap-menu">
+        <!-- Chaque élément possède désormais un span pour le texte, afin de garantir que le texte reste toujours horizontal -->
+        <a href="page1.html" class="mindmap-item" data-angle="0">
+          <span class="mindmap-label">Biais de Confirmation</span>
+        </a>
+        <a href="page2.html" class="mindmap-item" data-angle="120">
+          <span class="mindmap-label">Effet de Halo</span>
+        </a>
+        <a href="page3.html" class="mindmap-item" data-angle="240">
+          <span class="mindmap-label">Biais de Récence</span>
+        </a>
+        <!-- Vous pouvez ajouter d'autres éléments avec un data-angle approprié -->
+      </div>
+      <!-- Image centrale style cartoon représentant un cerveau (SVG sans fond) -->
+      <img src="https://svgrepo.com/show/13695/brain.svg" alt="Cerveau Cartoon" class="central-brain">
+    </div>    
  
     
     <!-- Pied de page pour les informations complémentaires -->
