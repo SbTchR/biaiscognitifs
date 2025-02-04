@@ -4,53 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Corrigé Interactif sur les Biais Cognitifs</title>
-  <!-- Lien vers la police Nunito depuis Google Fonts -->
+  <!-- Lien vers la police Nunito -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
-  <!-- Lien vers le fichier CSS externe -->
+  <!-- Lien vers le fichier CSS -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Container principal pour l'ensemble du contenu -->
   <div class="container">
-    
-    <!-- En-tête de la page d'accueil -->
+    <!-- En-tête -->
     <header class="header">
       <h1>Corrigé Interactif sur les Biais Cognitifs</h1>
-      <p>Choisissez un thème pour explorer les biais cognitifs et découvrir leurs explications à travers des expériences interactives.</p>
+      <p>Explorez les biais cognitifs grâce à des expériences interactives.</p>
     </header>
     
-    <!-- Section principale contenant la navigation vers les sous-thèmes -->
-    <main class="main-content">
-      <!-- Section pour les images interactives ajoutées -->
-      <section class="intro-images">
-        <!-- Image 1 : Illustration cognitive -->
-        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" 
-             alt="Illustration cognitive" class="interactive-image">
-        <!-- Image 2 : Infographie sur les biais cognitifs -->
-        <img src="https://images.unsplash.com/photo-1551817958-20204a27b403?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60" 
-             alt="Infographie biais cognitifs" class="interactive-image">
-      </section>
-      
-      <!-- Navigation sous forme de liste de liens cliquables -->
-      <nav class="theme-links">
-        <ul>
-          <!-- Chaque lien dirige vers une page HTML distincte pour un sous-thème -->
-          <li><a href="page1.html">Biais de Confirmation</a></li>
-          <li><a href="page2.html">Effet de Halo</a></li>
-          <li><a href="page3.html">Biais de Récence</a></li>
-          <!-- Ajouter d'autres thèmes si nécessaire -->
-        </ul>
-      </nav>
-    </main>
+    <!-- Menu sous forme de mind map circulaire -->
+    <div class="mindmap-menu">
+      <!-- Chaque lien possède un attribut data-angle pour déterminer sa position angulaire -->
+      <a href="page1.html" class="mindmap-item" data-angle="0">Biais de Confirmation</a>
+      <a href="page2.html" class="mindmap-item" data-angle="120">Effet de Halo</a>
+      <a href="page3.html" class="mindmap-item" data-angle="240">Biais de Récence</a>
+      <!-- Vous pouvez ajouter d'autres liens avec des angles adaptés -->
+    </div>
     
-    <!-- Pied de page pour les informations complémentaires -->
+    <!-- Pied de page -->
     <footer class="footer">
       <p>&copy; 2025 Votre Nom ou Établissement</p>
     </footer>
-    
   </div>
   
-  <!-- Lien vers le fichier JavaScript externe pour les interactions dynamiques -->
+  <!-- Lien vers le fichier JavaScript pour positionner dynamiquement les items -->
   <script src="script.js"></script>
 </body>
 </html>
