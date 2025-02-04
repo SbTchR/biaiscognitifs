@@ -1,77 +1,120 @@
 /* styles.css */
-
-/* Styles globaux */
+/* Global styles */
 body {
   margin: 0;
   padding: 0;
   font-family: 'Nunito', sans-serif;
-  background: #f5f5f5; /* Fond clair */
-  color: #333; /* Texte sombre pour une lisibilité optimale */
+  /* Fond en dégradé pastel animé pour une ambiance plus fantaisiste */
+  background: linear-gradient(135deg, #f7cac9, #92a8d1, #88b04b);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: #2d2d2d; /* Texte en gris foncé pour une excellente lisibilité */
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
 
-/* Conteneur principal avec fond blanc et ombre subtile */
+/* Animation du fond dégradé */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Conteneur principal avec une touche d'originalité */
 .container {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 25px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  padding: 40px;
   width: 90%;
   max-width: 900px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pseudo-élément pour ajouter un motif léger et organique */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: rotate(15deg);
+  pointer-events: none;
 }
 
 /* En-tête */
 .header h1 {
-  margin-bottom: 10px;
-  font-size: 2.5em;
+  margin-bottom: 15px;
+  font-size: 2.8em;
+  color: #2d2d2d;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
 }
 .header p {
   margin: 0;
-  font-size: 1.2em;
+  font-size: 1.3em;
+  color: #444;
 }
 
 /* Menu mind map */
+/* Conteneur du menu avec une légère rotation continue pour plus de fantaisie */
 .mindmap-menu {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 420px;
+  height: 420px;
   margin: 40px auto;
+  animation: slowRotate 60s linear infinite;
+}
+@keyframes slowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-/* Chaque élément du mind map (lien du menu) */
+/* Chaque élément du mind map, avec une forme moins régulière et des couleurs vives */
 .mindmap-item {
   position: absolute;
   left: 50%;
   top: 50%;
-  /* La position sera définie via JavaScript selon l'angle */
-  background: #e0e0e0;
-  color: #333;
-  padding: 10px 15px;
-  border-radius: 20px;
+  /* Fond en dégradé vif pour dynamiser l'interface */
+  background: linear-gradient(135deg, #ff6f61, #f7cac9);
+  color: #2d2d2d;
+  padding: 12px 18px;
+  /* Bordures irrégulières pour un look organique */
+  border-radius: 40% 60% / 50% 70%;
   text-decoration: none;
   font-weight: bold;
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Effet au survol (légère augmentation du rayon) */
+/* Effet au survol : agrandissement, légère rotation et changement de dégradé */
 .mindmap-item:hover {
-  background: #c0c0c0;
+  background: linear-gradient(135deg, #92a8d1, #88b04b);
+  transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Pied de page */
 .footer {
   margin-top: 40px;
-  font-size: 0.9em;
+  font-size: 0.95em;
+  color: #2d2d2d;
 }
 
 /* Adaptation responsive */
 @media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 30px;
+  }
   .mindmap-menu {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
   }
 }
